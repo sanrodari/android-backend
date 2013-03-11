@@ -1,4 +1,5 @@
 /var/*
 !/var/README.md
 vendor/*
+composer.lock
 .DS_STORE
