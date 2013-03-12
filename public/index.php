@@ -23,9 +23,7 @@ $app = new \Slim\Slim(array(
 $app->view(new \Slim\Extras\Views\Twig());
 
 // Define routes
-$app->get('/', function () use ($app) {
-    $app->render('index.html');
-});
+require '../app/routes/songs.php';
 
 // Run app
 $app->run();
