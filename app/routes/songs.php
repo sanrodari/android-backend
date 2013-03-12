@@ -3,7 +3,7 @@
 require_once '../app/lib/database.php';
 $db = Database::getInstance();
 
-$app->get('/songs', function () use ($app, $db) {
+$app->get('/songs/', function () use ($app, $db) {
   $all = $db->all('SELECT * FROM songs');
   echo json_encode($all);
 });
@@ -21,7 +21,7 @@ $app->get('/songs/:id', function ($id) use ($app, $db) {
   }
 });
 
-$app->post('/songs', function () use ($app, $db) {
+$app->post('/songs/', function () use ($app, $db) {
 
   $req = $app->request();
   $response = array();
