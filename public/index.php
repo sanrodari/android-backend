@@ -22,8 +22,25 @@ $app = new \Slim\Slim(array(
 );
 $app->view(new \Slim\Extras\Views\Twig());
 
+// Se configurar las variables que posteriormente van a usarse
+$req = $app->request();
+$accept = $req->headers('Accept');
+
+if ($accept == 'application/json') {
+    $res = $app->response();
+    $res['Content-Type'] = 'application/json';
+}
+
+require_once '../app/lib/database.php';
+require_once '../app/lib/session_manager.php';
+
+// Se configurar las variables que posteriormente van a usarse
+$db = Database::getInstance();
+
 // Define routes
-require '../app/routes/songs.php';
+require_once '../app/routes/songs.php';
+require_once '../app/routes/users.php';
+require_once '../app/routes/sessions.php';
 
 // Run app
 $app->run();

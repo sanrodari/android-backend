@@ -1,5 +1,6 @@
 global:
     env:
+        # TODO Mejorar este archivo (db, envars, etc.)
         - SLIM_MODE: development
 web1:
     # App settings
