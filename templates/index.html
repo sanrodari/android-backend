@@ -5,8 +5,8 @@
     {% block head %}
     <meta charset="utf-8">
     <title>{{ title }} - Songs</title>
-    <link rel="stylesheet" href="{{ urlFor('root') }}/bootstrap/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="{{ urlFor('root') }}/bootstrap/css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="{{ urlFor('root') }}bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="{{ urlFor('root') }}bootstrap/css/bootstrap-responsive.min.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="demo">
     <meta name="author" content="sanrodari">
@@ -104,12 +104,12 @@
     </div>
 
     <!-- Se cargan los JS -->
-    <script src="{{ urlFor('root') }}/js/jquery-2.0.0.min.js"></script>
-    <script src="{{ urlFor('root') }}/js/app.js"></script>
-    <script src="{{ urlFor('root') }}/bootstrap/js/bootstrap.min.js"></script>
+    <script src="{{ urlFor('root') }}js/jquery-2.0.0.min.js"></script>
+    <script src="{{ urlFor('root') }}js/app.js"></script>
+    <script src="{{ urlFor('root') }}bootstrap/js/bootstrap.min.js"></script>
 
     {% for js in scripts %}
-      <script src="{{ urlFor('root') }}/js/{{ js }}"></script>  
+      <script src="{{ urlFor('root') }}js/{{ js }}"></script>  
     {% endfor %}
   </body>
 </html>
