@@ -44,7 +44,7 @@
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
               {% if sessionUser() %}
-                En sesión de
+                Bienvenido
                 <a href="{{ urlFor('editUser', {id: sessionUser().id}) }}">{{ sessionUser().username }}</a>
                 <a href="{{ urlFor('sessions') }}" title="Cerrar sesión" data-close-session>
                   <i class="icon-remove icon-white"></i>
