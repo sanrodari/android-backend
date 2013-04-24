@@ -48,8 +48,15 @@ web1:
     php_max_file_uploads: 20
 
     # Install Composer dependencies
-    after_build:
-        - "if [ ! -f composer.phar ]; then curl -s http://getcomposer.org/installer | php; fi; php composer.phar install"
+    # Se remueve temporalmente porque estaba fallando el despliegue. Traza:
+    # - Installing slim/slim (2.2.0)
+    # -     Downloading: connection...
+    # - 
+    # -                                                                                                                    
+    # -   [Composer\Downloader\TransportException]                                                                         
+    # -   The 'https://api.github.com/repos/codeguy/Slim/zipball/2.2.0' URL could not be accessed: HTTP/1.1 403 Forbidden  
+    # after_build:
+    #     - "if [ ! -f composer.phar ]; then curl -s http://getcomposer.org/installer | php; fi; php composer.phar install"
 
     # Clear template cache and old logs
     after_deploy:
