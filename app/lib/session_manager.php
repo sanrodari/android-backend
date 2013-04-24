@@ -18,6 +18,7 @@ function authorizeRequest($app, $db, $respond = TRUE){
   $reqHeaders = getallheaders();
 
   if($accept == 'application/json') {
+    var_dump($reqHeaders);
     $authorization =
       isset($reqHeaders['Authorization']) ?
         $reqHeaders['Authorization'] : 
