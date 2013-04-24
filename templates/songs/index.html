@@ -1,0 +1,14 @@
+{% extends "index.html" %}
+
+{% block content %}
+  {% for song in songs %}
+  <div class="row">
+    <div class="offset1 span4">
+      <a href="{{ urlFor('song', {id: song.id}) }}">{{ song.name }}</a>
+    </div>
+    <div class="offset1 span1">
+      <a href="{{ urlFor('song', {id: song.id}) }}" data-method="DELETE"><i class="icon-trash"></i></a>
+    </div>
+  </div>
+  {% endfor %}
+{% endblock %}

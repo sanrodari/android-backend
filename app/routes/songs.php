@@ -1,27 +1,33 @@
 <?php
 
 $app->get('/songs/', function () use ($app, $db, $accept) {
-  if(!authorizeRequest($app, $db)) return;
+  if(!$user = authorizeRequest($app, $db)) return;
+
+  $all = $db->all('SELECT * FROM songs s WHERE `s`.`user` = :user', array(
+    "user" => $user->id
+  ));
 
   if($accept == 'application/json') {
-    $all = $db->all('SELECT * FROM songs');
     echo json_encode($all);
   }  
   else {
-    # TODO servir la página
-    echo "servir la página";
+    $app->render('songs/index.html', array(
+      'songs'   => $all,
+      'title'   => 'Canciones',
+      'scripts' => array('index_songs.js')
+    ));
   }
-
-});
+})->name('songs');
 
 $app->get('/songs/:id', function ($id) use ($app, $db, $accept) {
   if(!$user = authorizeRequest($app, $db)) return;
 
-  if($accept == 'application/json') {
-    $one = $db->one('SELECT * FROM songs WHERE id = :id',
-      array('id' => $id)
-    );
+  $one = $db->one('SELECT * FROM songs WHERE id = :id AND `user` = :idUser', array(
+    'id'     => $id,
+    'idUser' => $user->id
+  ));
 
+  if($accept == 'application/json') {
     if($one){
       echo json_encode($one);
     }
@@ -30,38 +36,41 @@ $app->get('/songs/:id', function ($id) use ($app, $db, $accept) {
     }
   }  
   else {
-    # TODO servir la página
-    echo "servir la página";
+    $app->render('songs/show.html', array(
+      'title' => "Detalle de canción {$one->name}",
+      'song'  => $one
+    ));
   }
 
-});
+})->name('song')
+// TODO no funcionó esta regex (?!new)
+->conditions(array('id' => '\\d+'));
 
 $app->post('/songs/', function () use ($app, $db, $accept) {
   if(!$user = authorizeRequest($app, $db)) return;
 
-  if($accept == 'application/json') {
-    $req = $app->request();
-    $response = array();
-    if($req->post('name') && $req->post('url')) {
-      $id = $db->execute('INSERT INTO songs (`name`, `url`, `user`) VALUES(:name, :url, :user)', 
-        array(
-          'name' => $req->post('name'),
-          'url'  => $req->post('url'),
-          'user' => $user->id
-        )
-      );
+  $req = $app->request();
+  $response = array();
+  if($req->post('name') && $req->post('url')) {
+    $id = $db->execute('INSERT INTO songs (`name`, `url`, `user`) VALUES(:name, :url, :user)', 
+      array(
+        'name' => $req->post('name'),
+        'url'  => $req->post('url'),
+        'user' => $user->id
+      )
+    );
 
-      $response['id'] = $id;
-      echo json_encode($response);
-    }
-    else {
-      $response['error'] = 'Faltan parámetros';
-      echo json_encode($response);
-    }
+    $response['id'] = $id;
+  }
+  else {
+    $response['error'] = 'Faltan parámetros';
+  }
+
+  if($accept == 'application/json') {
+    echo json_encode($response);
   }  
   else {
-    # TODO servir la página
-    echo "servir la página";
+    $app->redirect($app->urlFor('song', array("id" => $id)));
   }
 
 });
@@ -69,54 +78,82 @@ $app->post('/songs/', function () use ($app, $db, $accept) {
 $app->put('/songs/:id', function ($id) use ($app, $db, $accept) {
   if(!$user = authorizeRequest($app, $db)) return;
 
-  if($accept == 'application/json') {
-    $req = $app->request();
-    $response = array();
-    if($req->put('name') && $req->put('url')) {
-      $rows = $db->execute('UPDATE `songs` s SET `name` = :name, `url` = :url WHERE s.id = :id AND `user` = :idUser', 
-        array(
-          'name'   => $req->put('name'),
-          'url'    => $req->put('url'),
-          'id'     => $id,
-          'idUser' => $user->id
-        )
-      );
+  $req = $app->request();
+  $response = array();
+  if($req->put('name') && $req->put('url')) {
+    $rows = $db->execute('UPDATE `songs` s SET `name` = :name, `url` = :url WHERE s.id = :id AND `user` = :idUser', 
+      array(
+        'name'   => $req->put('name'),
+        'url'    => $req->put('url'),
+        'id'     => $id,
+        'idUser' => $user->id
+      )
+    );
 
-      $response['id']           = $id;
-      $response['name']         = $req->put('name');
-      $response['url']          = $req->put('url');
-      $response['rowsAffected'] = $rows;
-      echo json_encode($response);
-    }
-    else {
-      $response['error'] = 'Faltan parámetros';
-      echo json_encode($response);
-    }
+    $response['id']           = $id;
+    $response['name']         = $req->put('name');
+    $response['url']          = $req->put('url');
+    $response['rowsAffected'] = $rows;
+  }
+  else {
+    $response['error'] = 'Faltan parámetros';
+  }
+
+  if($accept == 'application/json') {
+    echo json_encode($response);
   }  
   else {
-    # TODO servir la página
-    echo "servir la página";
+    $app->redirect($app->urlFor('song', array("id" => $id)));
   }
 });
 
 $app->delete('/songs/:id', function ($id) use ($app, $db, $accept) {
   if(!$user = authorizeRequest($app, $db)) return;
 
-  if($accept == 'application/json') {
-    $req = $app->request();
-    $response = array();
-    $rows = $db->execute('DELETE FROM `songs` WHERE `id` = :id AND `user` = :idUser', 
-      array(
-        'id'     => $id,
-        'idUser' => $user->id
-      )
-    );
+  $req = $app->request();
+  $response = array();
+  $rows = $db->execute('DELETE FROM `songs` WHERE `id` = :id AND `user` = :idUser', 
+    array(
+      'id'     => $id,
+      'idUser' => $user->id
+    )
+  );
 
-    $response['rowsAffected'] = $rows;
+  $response['rowsAffected'] = $rows;
+  if($accept == 'application/json') {
     echo json_encode($response);
   }  
   else {
-    # TODO servir la página
-    echo "servir la página";
+    $app->redirect($app->urlFor('songs'));
   }
 });
+
+// Rutas específicas para representación HTML
+
+$app->get('/songs/:id/edit/', function ($id) use ($app, $db, $accept) {
+  if(!$user = authorizeRequest($app, $db)) return;
+
+  $one = $db->one('SELECT * FROM songs WHERE id = :id AND `user` = :idUser', array(
+    'id'     => $id,
+    'idUser' => $user->id
+  ));
+
+  if($one) {
+    $app->render('songs/edit.html', array(
+      'title' => "Editar {$one->name}",
+      'song'  => $one
+    ));
+  }
+  else {
+    echo 'No existe el recurso solicitado.';
+    $app->response()->status(404);
+  }
+})->name('editSong');
+
+$app->get('/songs/new/', function () use ($app, $db, $accept) {
+  if(!$user = authorizeRequest($app, $db)) return;
+
+  $app->render('songs/new.html', array(
+    'title' => "Crear canción"
+  ));
+})->name('newSong');

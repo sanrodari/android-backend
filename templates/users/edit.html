@@ -1,0 +1,18 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+  <form action="{{ urlFor('user', {id: user.id}) }}" method="POST" id="edit-form">
+    <input type="hidden" name="_METHOD" value="PUT">
+
+    <label for="password">Nueva contraseña</label>
+    <input id="password" type="password" name="password">
+
+    <label for="passwordConfirmation">Confirmar contraseña</label>
+    <input id="passwordConfirmation" type="password" name="passwordConfirmation">
+
+    <div>&nbsp;</div>
+    <input type="submit" class="btn" value="Cambiar contraseña">
+  </form>
+
+{% endblock %}

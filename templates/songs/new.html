@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+  <form action="{{ urlFor('songs') }}" method="POST">
+    <label for="name">Nombre</label>
+    <input type="text" name="name">
+
+    <label for="url">URL</label>
+    <input type="text" name="url">
+
+    <div>&nbsp;</div>
+    <input type="submit" class="btn" value="Crear">
+  </form>
+
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+  <label for="name">Nombre</label>
+  <input readonly type="text" name="name" value="{{ song.name }}">
+
+  <label for="url">URL</label>
+  <a href="{{ song.url }}" target="_blank">{{ song.name }}</a>
+
+  <div>&nbsp;</div>
+  <a href="{{ urlFor('editSong', {id: song.id}) }}"><i class="icon-edit"></i> Editar</a>
+
+{% endblock %}

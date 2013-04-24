@@ -1,0 +1,18 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+  <form action="{{ urlFor('song', {id: song.id}) }}" method="POST">
+    <input type="hidden" name="_METHOD" value="PUT">
+
+    <label for="name">Nombre</label>
+    <input type="text" name="name" value="{{ song.name }}">
+
+    <label for="url">URL</label>
+    <input type="text" name="url" value="{{ song.url }}">
+
+    <div>&nbsp;</div>
+    <input type="submit" class="btn" value="Actualizar">
+  </form>
+
+{% endblock %}

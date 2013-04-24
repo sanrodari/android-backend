@@ -12,16 +12,6 @@ $app = new \Slim\Slim(array(
     ))
 ));
 
-// Prepare view
-\Slim\Extras\Views\Twig::$twigOptions = array(
-    'charset' => 'utf-8',
-    'cache' => realpath('../var/cache'),
-    'auto_reload' => true,
-    'strict_variables' => false,
-    'autoescape' => true
-);
-$app->view(new \Slim\Extras\Views\Twig());
-
 // Se configurar las variables que posteriormente van a usarse
 $req = $app->request();
 $accept = $req->headers('Accept');
@@ -34,13 +24,30 @@ if ($accept == 'application/json') {
 require_once '../app/lib/database.php';
 require_once '../app/lib/session_manager.php';
 
-// Se configurar las variables que posteriormente van a usarse
 $db = Database::getInstance();
+
+// Prepare view
+\Slim\Extras\Views\Twig::$twigOptions = array(
+    'charset' => 'utf-8',
+    'cache' => realpath('../var/cache'),
+    'auto_reload' => true,
+    'strict_variables' => false,
+    'autoescape' => true
+);
+
+require_once '../app/lib/twig_session_extension.php';
+\Slim\Extras\Views\Twig::$twigExtensions = array(
+    'Twig_Extensions_Slim',
+    'Session_Extension'
+);
+
+$app->view(new \Slim\Extras\Views\Twig());
 
 // Define routes
 require_once '../app/routes/songs.php';
 require_once '../app/routes/users.php';
 require_once '../app/routes/sessions.php';
+require_once '../app/routes/public.php';
 
 // Run app
 $app->run();
