@@ -17,12 +17,14 @@ function authorizeRequest($app, $db, $respond = TRUE){
   $accept = $req->headers('Accept');
   $reqHeaders = getallheaders();
 
+  $authorization = '';
   if($accept == 'application/json') {
-    var_dump($reqHeaders);
-    $authorization =
-      isset($reqHeaders['Authorization']) ?
-        $reqHeaders['Authorization'] : 
-          isset($reqHeaders['authorization']) ? $reqHeaders['authorization'] : '';
+    if(isset($reqHeaders['Authorization'])) {
+      $authorization = $reqHeaders['Authorization'];
+    }
+    elseif (isset($reqHeaders['authorization'])) {
+      $authorization = $reqHeaders['authorization']; 
+    }
   }
   else {
     $authorization = $app->getCookie('Authorization');
