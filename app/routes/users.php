@@ -137,6 +137,6 @@ $app->get('/users/:id/edit/', function ($id) use ($app, $db, $accept) {
 
 $app->get('/users/new/', function () use ($app, $db, $accept) {
   $app->render('users/new.html', array(
-    'title' => "Crear canción"
+    'title' => "Regístrate"
   ));
-});
+})->name('newUser');
